@@ -9,6 +9,9 @@ from six import StringIO
 import six
 from gym import error, logger
 
+# customized
+from ed_env.dec.render import render
+
 def touch(path):
     open(path, 'a').close()
 
@@ -98,7 +101,10 @@ class VideoRecorder(object):
         logger.debug('Capturing video frame: path=%s', self.path)
 
         render_mode = 'ansi' if self.ansi_mode else 'rgb_array'
-        frame = self.env.render(mode=render_mode)
+        if self.env.event_driven:
+            frame = render(self.env, mode=render_mode)
+        else:
+            frame = self.env.render(mode=render_mode)
 
         if frame is None:
             if self._async:
